@@ -1,0 +1,720 @@
+<!Doctype html>
+<html>
+    <head>
+        <style>
+            #design{
+                border:1px solid black; 
+            }
+            
+            #wrapper{
+                position: :relative;
+                
+            }
+            #design{
+                z-index: -1;
+                position : absolute;
+                margin : 10px 320px;
+            }
+            
+            #game{
+                z-index: 0;
+                position : absolute;
+                margin : 10px 320px;
+            }
+            #player1,#player3{
+                margin-left: 400px;
+                border: thick solid black;
+                visibility: hidden;
+            }
+            #player2,#player4{
+                margin-left: 275px;
+                border: thick solid black;
+                visibility: hidden;
+            }
+            .playersdown{
+                margin-top: 630px;
+            }
+            
+        </style>
+    </head>
+    <body>
+        <canvas id= "player1" class = "playerstop" width="80px" height ="80px"></canvas>
+        <canvas id= "player2" class = "playerstop" width="80px" height ="80px"></canvas>
+        <div id="wrapper"> 
+            <canvas id = "design" width="600px" height ="600px" ></canvas>
+            <canvas id = "game" width="600px" height ="600px" ></canvas>
+        </div>
+        <!--button onclick="myfunction()">click me to move ahead</button>
+        <button onclick="goBackward()">click me to go back</button-->
+        <canvas id= "player3" class = "playersdown" width="80px" height ="80px"></canvas>
+        <canvas id= "player4" class = "playersdown" width="80px" height ="80px"></canvas>
+    </body>
+    
+    <script>
+        //------------------------getting the canvas object and context which is used fro design------------------------------------
+        var canvas = document.getElementById("design");
+        var context = canvas.getContext("2d");
+        
+        
+        //------------------------filled the design canvas with grey color----------------------------------------------------------
+        context.fillStyle = "grey";
+        context.fillRect(0,0,600,600);
+        
+        
+        //--------------make the red colored triangle in middle square , square at top right and path between them -----------------
+        context.beginPath();
+        context.moveTo(300,300);
+        context.lineTo(240,240);
+        context.lineTo(360,240);
+        context.fillStyle = "#f45c42";
+        context.fill();
+        context.fillRect(280,40,40,200);
+        context.fillRect(360,0,240,240);
+        context.fillRect(320,40,40,40);
+        context.closePath();
+        
+        //--------------make the green colored triangle in middle square , square at top left and path between them ---------------
+        context.beginPath();
+        context.moveTo(300,300);
+        context.lineTo(240,240);
+        context.lineTo(240,360);
+        context.fillStyle = "#c4f441";
+        context.fill();
+        context.fillRect(40,280,200,40);
+        context.fillRect(0,0,240,240);
+        context.fillRect(40,240,40,40);
+        context.closePath();
+        
+        
+        //--------------make the blue colored triangle in middle square , square at bottom left and path between them --------------
+        context.beginPath();
+        context.moveTo(300,300);
+        context.lineTo(240,360);
+        context.lineTo(360,360);
+        context.fillStyle = "#41b2f4";
+        context.fill();
+        context.fillRect(280,360,40,200);
+        context.fillRect(0,360,240,240);
+        context.fillRect(240,520,40,40);
+        context.closePath();
+        
+        
+        //--------------make the yellow colored triangle in middle square , square at bottom left and path between them ------------
+        context.beginPath();
+        context.moveTo(300,300);
+        context.lineTo(360,240);
+        context.lineTo(360,360);
+        context.fillStyle = "#f4ee70";
+        context.fill();
+        context.fillRect(360,280,200,40);
+        context.fillRect(360,360,240,240);
+        context.fillRect(520,320,40,40);
+        context.closePath();
+        
+        
+        //-------------make the white colored squares trapped in the corner squares ------------------------------------------------
+        context.beginPath();
+        context.fillStyle = "white";
+        context.fillRect(40,40,160,160);
+        context.fillRect(400,40,160,160);
+        context.fillRect(40,400,160,160);
+        context.fillRect(400,400,160,160);
+        context.closePath();
+        
+        
+        //-------------draw the horizontal and vertical lines ----------------------------------------------------------------------
+        context.beginPath();
+        for(var i = 40; i < 600; i = i+40){
+            if(i <= 240 || i >= 360){
+                context.moveTo(i,240);
+                context.lineTo(i,360);
+                
+                context.moveTo(240,i);
+                context.lineTo(360,i);
+            }
+            if(i >= 240 && i <= 360){
+                context.moveTo(i,0);
+                context.lineTo(i,240);
+                context.moveTo(i,360);
+                context.lineTo(i,600);
+                
+                context.moveTo(0,i);
+                context.lineTo(240,i);
+                context.moveTo(360,i);
+                context.lineTo(600,i);
+            }
+            if(i == 40 || i == 120 ||i == 200 || i == 400 || i == 480 || i == 560){
+                context.moveTo(i,40);
+                context.lineTo(i,200);
+                context.moveTo(i,400);
+                context.lineTo(i,560);
+            
+                context.moveTo(40,i);
+                context.lineTo(200,i);
+                context.moveTo(400,i);
+                context.lineTo(560,i);
+            }
+            
+        }        
+        context.stroke();
+        context.closePath();
+        
+        
+        
+        //---------------------------draw the stars to represent the safe boxes---------------------------------------------------
+        context.fillStyle = "black";
+        for (arr of [[60,260],[100,340],[500,260],[540,340]]){
+            var x = arr[0];
+            var y = arr[1];
+            context.beginPath();
+            context.moveTo(x,y-20);
+            context.lineTo(x-20,y+10);
+            context.lineTo(x+20,y+10);
+            context.lineTo(x,y-20);
+            
+            context.moveTo(x,y+20);
+            context.lineTo(x-20,y-10);
+            context.lineTo(x+20,y-10);
+            context.lineTo(x,y+20);
+            context.fill();
+            context.stroke();
+            
+            y = canvas.height-y;
+            context.beginPath();
+            context.moveTo(y,x-20);
+            context.lineTo(y-20,x+10);
+            context.lineTo(y+20,x+10);
+            context.lineTo(y,x-20);
+            
+            context.moveTo(y,x+20);
+            context.lineTo(y-20,x-10);
+            context.lineTo(y+20,x-10);
+            context.lineTo(y,x+20);
+            context.fill();
+            context.stroke();
+            
+        }
+        
+        
+        //------------------------------- write player names in the squares -----------------------------------------------------
+        context.font = "30px Arial";
+        var num = 1;
+        for (arr of [[40,0],[400,0],[40,560],[400,560]]){
+            var x = arr[0];
+            var y = arr[1];
+            var gradient = context.createLinearGradient(x, y, x+160, y);
+            gradient.addColorStop("0", "green");
+            gradient.addColorStop("0.33", "black");
+            gradient.addColorStop("0.66", "red");
+            gradient.addColorStop("1.0", "blue");
+            context.fillStyle = gradient;
+            context.fillText("PLAYER "+num,x+4,y+30);
+            num++;
+        }
+    
+        //----------------------------------------------------------------------------------------------------------------
+        //----------------------------------------------------------------------------------------------------------------
+        
+        
+        //-----------------get the canvas object and its context for the game canvas ------------------------------------
+        
+        var canvasGame = document.getElementById("game");
+        var ctx = canvasGame.getContext("2d");
+        
+        
+        //--------------------------- declaration of global variables --------------------------------------------------
+        var colors = ["green","red","blue","yellow"];
+        var pawns = Array();
+        var goBack = 0;
+        
+        var rect = canvas.getBoundingClientRect();
+        var leftOffset = rect.left + window.scrollX ;
+        var topOffset = rect.top + window.scrollY;
+        
+        var commonPath =[[20,260,false],[60,260,true],[100,260,false],[140,260,false],[180,260,false],[220,260,false],
+                         [260,220,false],[260,180,false],[260,140,false],[260,100,true],[260,60,false],[260,20,false],
+                         [300,20,false],
+                         [340,20,false],[340,60,true],[340,100,false],[340,140,false],[340,180,false],[340,220,false],
+                         [380,260,false],[420,260,false],[460,260,false],[500,260,true],[540,260,false],[580,260,false],
+                         [580,300,false],
+                         [580,340,false],[540,340,true],[500,340,false],[460,340,false],[420,340,false],[380,340,false],
+                         [340,380,false],[340,420,false],[340,460,false],[340,500,true],[340,540,false],[340,580,false],
+                         [300,580,false],
+                         [260,580,false],[260,540,true],[260,500,false],[260,460,false],[260,420,false],[260,380,false],
+                         [220,340,false],[180,340,false],[140,340,false],[100,340,true],[60,340,false],[20,340,false],
+                         [20,300,false]];
+        var specialPath = [[60,300],[100,300],[140,300],[180,300],[220,300],[260,300],
+                           [300,60],[300,100],[300,140],[300,180],[300,220],[300,260],
+                           [300,540],[300,500],[300,460],[300,420],[300,380],[300,340],
+                           [540,300],[500,300],[460,300],[420,300],[380,300],[340,300]];
+        
+        var commonOccupy = Array();
+        for(var i = 0; i <= 51 ; i++){
+            var arr = [0,0,0,0,0];
+            commonOccupy.push(arr);
+        }
+        
+        var specialOccupy = Array();
+        for(var i = 0; i <= 5; i++){
+            var arr = [0,0,0,0,0];
+            specialOccupy.push(arr);
+        }
+        
+        
+        
+        //------------------------ Definition of class Pawn which will be used to create the pawns--------------------------
+        /*
+        x                  : x coordinate of the center of pawn
+        y                  : y coordinate of the center of pawn
+        color              : color of pawn
+        number             : pawn number (green : 1 ; red : 2 ; blue : 3 ; yellow : 4)
+        resting            : flag if the pawn is still in the initial position.
+        goBack             : flag if the pawn is moving backward (case when other pawn takes its position then it should go to                            starting place)
+        currPos            : act as index for getting the postion of the pawn from path arrays.
+        special            : flag if the pawn has entered in special path.
+        finished           : flag if the pawn has reached its final position.
+        rest               : specifies the starting/resting position of the pawn.
+        distanceTravelled  : counts the square boxes travelled by the pawn (Max is 57)
+        able               : specifies the ability of the pawn to move based on the number on dice
+        start              : specifies the value of currPos immediately after getting out of resting
+        end                : specifies the currPos value after which the pawn will enter in the special path
+        
+        draw()             : function drawing the pawn using the center as x,y . it is ckecking whether more than one colored pawns                        are present at the current position. If so then it is reducing the size of the pawns and printing them                        separately at the corners. Also it prints the number of pawns of that particular color in the pawn.                          Moreover it checkes if the pawn is able to move from its able variable and it draws white colored circle                      to show its ability.
+        move()             : 
+        */
+        
+        
+        class Pawn{
+            constructor(x,y,color,number){
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.number = number;
+                this.resting = true;
+                this.goBack = 0;
+                this.currPos = -1;
+                this.special = false;
+                this.finished = false;
+                this.rest = [x,y];
+                this.distanceTravelled = 0;
+                this.able = false;
+                if(color == "green"){
+                    this.start = 1;
+                    this.end = 51;
+                }
+                else if(color == "red"){
+                    this.start = 14;
+                    this.end = 12;
+                }
+                else if(color == "blue"){
+                    this.start = 40;
+                    this.end = 38; 
+                }
+                else{
+                    this.start = 27;
+                    this.end = 25;
+                }
+            }
+            
+            
+            draw(){
+                var x = this.x;
+                var y = this.y;
+                var size = 15;
+                if(((this.special == false) ||(this.special == true && this.currPos == this.end)) && this.finished != true && this.resting != true){
+                    if(commonOccupy[this.currPos][0] - commonOccupy[this.currPos][this.number] > 0){
+                        size = 9;
+                        switch(this.number){
+                            case 1:
+                                x = x - 10;
+                                y = y - 10;
+                                break;
+                            case 2:
+                                x = x + 10;
+                                y = y - 10;
+                                break;
+                            case 3:
+                                x = x - 10;
+                                y = y + 10;
+                                break;
+                            case 4:
+                                x = x + 10;
+                                y = y + 10;
+                                break;                      
+                        }
+                    }
+                }
+                ctx.beginPath();
+                ctx.fillStyle = this.color;
+                ctx.arc(x, y, size , 0, 2*Math.PI);
+                ctx.fill();
+                ctx.stroke();
+                ctx.closePath();
+                if(this.able == true){
+                    ctx.beginPath();
+                    ctx.fillStyle = "white";
+                    ctx.arc(x, y, size-3 , 0, 2*Math.PI);
+                    ctx.fill();
+                    ctx.stroke();
+                    ctx.closePath();
+                }
+                ctx.fillStyle = "orange";
+                if(this.resting == false){
+                    if(((this.special == false) || (this.special == true && this.currPos == this.end)) && commonOccupy[this.currPos][this.number] > 1 ){
+                        ctx.fillText(commonOccupy[this.currPos][this.number], x-3, y+3);
+                    }
+                    else if(this.special == true && this.currPos != this.end){
+                        if(specialOccupy[this.currPos][this.number] > 1){
+                            ctx.fillText(specialOccupy[this.currPos][this.number], x-3, y+3);
+                        }
+                    }     
+                }
+                
+            }
+            
+            move(direction){
+                if(this.finished == true){
+                    return;
+                }
+                var pos = Array();
+                if((this.special == false && this.resting == false)||(this.special == true && this.currPos == this.end)){
+                    commonOccupy[this.currPos][this.number]--;
+                    commonOccupy[this.currPos][0]--;
+                }
+                else if(this.resting == false ){
+                    specialOccupy[this.currPos][this.number]--;
+                    specialOccupy[this.currPos][0]--;
+                    
+                }
+                
+                if(this.resting == true && direction == 1){
+                    this.currPos = this.start;
+                    pos = commonPath[this.currPos];
+                    this.resting = false;
+                    this.distanceTravelled++;
+                }
+                else if(direction == 1){
+                    this.distanceTravelled++;
+                    if(this.special == true){
+                        this.currPos = (this.currPos+1)% (this.end+1) ;
+                        pos = specialPath[(this.number - 1) * 6 + this.currPos];
+                        if(this.distanceTravelled == 57){
+                            this.finished = true;
+                        }
+                    }
+                    else{
+                        this.currPos = (this.currPos+1)% 52 ;
+                        pos = commonPath[this.currPos];
+                    }
+                    if(this.currPos == this.end){
+                        this.special = true;
+                    }
+                    
+                }
+                else{
+                    this.distanceTravelled--;
+                    if(this.currPos == this.start){
+                        this.resting = true;
+                        this.currPos = -1;
+                        pos = this.rest;
+                    }
+                    else{
+                        this.currPos --;
+                        if(this.currPos < 0){
+                            this.currPos = 51;
+                        }
+                        pos = commonPath[this.currPos];
+                    }
+                }
+                
+                if((this.special == false && this.resting == false) || (this.special == true && this.currPos == this.end)){
+                    commonOccupy[this.currPos][0]++;
+                    commonOccupy[this.currPos][this.number]++;
+                    if(commonOccupy[this.currPos][0] != commonOccupy[this.currPos][this.number]){
+                        ctx.clearRect(pos[0]-20,pos[1]-20,40,40);
+                    }
+                }
+                else if(this.resting == false){
+                    specialOccupy[this.currPos][0]++;
+                    specialOccupy[this.currPos][this.number]++;
+                }
+                this.x = pos[0];
+                this.y = pos[1];
+                
+            }
+        
+           
+        }
+        
+        setInterval(function(){
+            if(startMoving == true && numberOnDice2 > 0){
+                ctx.clearRect(pawnToMove.x-20,pawnToMove.y-20,40,40);
+                pawnToMove.move(1);
+                numberOnDice2--;
+                if(numberOnDice2 == 0){
+                    startMoving = false;
+                    var breakFlag = false;
+                    for(var i = 0; i < 4; i++){
+                        for(var j = 0; j < 4; j++){
+                            var pawn = pawns[i][j];
+                            if(pawn.number != pawnToMove.number && pawn.resting == false && pawn.special == false && pawn.finished == false){
+                                if(pawn.x == pawnToMove.x && pawn.y == pawnToMove.y && commonOccupy[pawn.currPos][pawn.number] == 1 &&           commonPath[pawn.currPos][2] == false){
+                                    pawn.goBack = 1;
+                                    backSendCase = true;
+                                    breakFlag = true;
+                                }
+                            }
+                        }
+                        if(breakFlag == true) break;
+                    }
+                }
+            }
+            for(var i = 0 ; i < 4 ; i++){
+                    for(var j = 0; j < 4 ; j++){
+                        var pawn = pawns[i][j];
+                        if(pawn.goBack == 1 ){
+                            if(pawn.resting == true){
+                                pawn.goBack = 0;
+                            }
+                            else{
+                                ctx.clearRect(pawn.x-20,pawn.y-20,40,40);
+                                pawn.move(-1); 
+                            }    
+                        }
+                        pawn.draw();
+                    }
+                }
+        },50);
+        
+        for(arr of [[80,80,0],[440,80,1],[80,440,2],[440,440,3]]){
+            var x = arr[0];
+            var y = arr[1];
+            var color = colors[arr[2]];
+            var number = arr[2] +1;
+            var sameColorPawns = Array();
+            var pawn = new Pawn(x,y,color,number);
+            pawn.draw();
+            sameColorPawns.push(pawn);
+            pawn = new Pawn(x+80,y,color,number);
+            pawn.draw();
+            sameColorPawns.push(pawn);
+            pawn = new Pawn(x,y+80,color,number);
+            pawn.draw();
+            sameColorPawns.push(pawn);
+            pawn = new Pawn(x+80,y+80,color,number);
+            pawn.draw();
+            sameColorPawns.push(pawn);
+            pawns.push(sameColorPawns);
+        }
+        
+        function myfunction(){
+            var pawn = pawns[0][0];
+            ctx.clearRect(pawn.x-20,pawn.y-20,40,40);
+            pawn.move(1);
+            pawn.draw();
+        }
+        
+        function goBackward(){
+            pawns[0][0].goBack = 1;
+        }
+        
+        var pawnToMove = null;
+        var startMoving = false;
+        var numberOnDice2 = 0;
+        var backSendCase = false;
+        
+        function movePawn(p){
+                if(randomNumberDisplayed == false){
+                    return;
+                }
+                var mouseX= p.pageX-leftOffset;
+                var mouseY= p.pageY-topOffset;
+                console.log(mouseX+" "+mouseY);
+                for(var i = 0 ; i < 4 ; i++){
+                    var pawn = pawns[turn-1][i];
+                    if(mouseX >= pawn.x-20 && mouseX <= pawn.x+20 && mouseY >= pawn.y-20 && mouseY <= pawn.y+20 && pawn.able == true){
+                        ctx.clearRect(pawn.x-20,pawn.y-20,40,40);
+                        if(pawn.resting == true && numberOnDice == 6){
+                            pawn.move(1);
+                        }
+                        else if(pawn.resting == false){
+                            numberOnDice2 = numberOnDice;
+                            pawnToMove = pawn;
+                            startMoving = true;
+                        }
+                        makeDisable();
+                        if(numberOnDice != 6 && backSendCase == false){
+                            turn = turn +1;
+                            if(turn == 5){
+                                turn = 1;
+                            }
+                        }
+                        ctxPlayer.clearRect(0,0,canvasPlayer.width,canvasPlayer.height);
+                        canvasPlayer.style.visibility = "hidden";
+                        randomNumberDisplayed = false;
+                        backSendCase = false;
+                    }
+                }
+            
+             
+        }
+        
+        canvasGame.addEventListener('click', movePawn, false);
+        
+//----------------------------------------------------------------------------------------------------------------------------------
+        
+        var canvasPlayer1 = document.getElementById("player1");
+        var canvasPlayer2 = document.getElementById("player2");
+        var canvasPlayer3 = document.getElementById("player3");
+        var canvasPlayer4 = document.getElementById("player4");
+        var canvasPlayer = null;
+    
+        var ctxPlayer1 = canvasPlayer1.getContext("2d");
+        var ctxPlayer2 = canvasPlayer2.getContext("2d");
+        var ctxPlayer3 = canvasPlayer3.getContext("2d");
+        var ctxPlayer4 = canvasPlayer4.getContext("2d");
+        var ctxPlayer = null;
+        
+        canvasPlayer1.addEventListener('click', function(){rolling(1);} , false);
+        canvasPlayer2.addEventListener('click', function(){rolling(2);} , false);
+        canvasPlayer3.addEventListener('click', function(){rolling(3);} , false);
+        canvasPlayer4.addEventListener('click', function(){rolling(4);} , false);
+        
+        canvasPlayer1.style.visibility = "visible";
+        
+        var turn = 1;
+        var diceRolled = false;
+        var rollingDone = false;
+        var numberOnDice = 1;
+        var randomNomberGenerated = false;
+        var randomNumberDisplayed = false;
+        function rolling(player){
+            if(turn == player){
+                numberOnDice = 1;
+                diceRolled = true;
+            }
+        }
+        
+        function initialize(){
+            switch(turn){
+                case 1:
+                    ctxPlayer =  ctxPlayer1;
+                    canvasPlayer = canvasPlayer1;
+                    break;
+                case 2:
+                   ctxPlayer =  ctxPlayer2;
+                    canvasPlayer = canvasPlayer2;
+                    break;
+                case 3:
+                   ctxPlayer =  ctxPlayer3;
+                    canvasPlayer = canvasPlayer3;
+                    break;
+                case 4:
+                   ctxPlayer =  ctxPlayer4;
+                    canvasPlayer = canvasPlayer4;
+                    break;
+            }
+        }
+        
+        function generateRandomNumber1_6(){
+            var temp = Math.floor(Math.random()*6)+1;
+            if(temp == 7){
+                temp = 6;
+            }
+            return temp;
+        }
+        
+        
+        function printNumberInDice(){
+            if(randomNumberDisplayed == true){
+                diceRolled = false;
+                randomNomberGenerated = false;
+                if(abilityToMove() == false){
+                    turn = turn+1;
+                    if(turn == 5){
+                        turn = 1;
+                    }
+                    ctxPlayer.clearRect(0,0,canvasPlayer.width,canvasPlayer.height);
+                    canvasPlayer.style.visibility = "hidden";
+                    randomNumberDisplayed = false;
+                    backSendCase = false;
+                }
+                return;
+            }
+            initialize();
+            
+            ctxPlayer.clearRect(0,0,canvasPlayer.width,canvasPlayer.height);
+            if(diceRolled == false){
+                canvasPlayer.style.visibility = "visible";
+                ctxPlayer.fillStyle = "black";
+                ctxPlayer.font = "15px Arial";
+                ctxPlayer.fillText("YOUR",15,18);
+                ctxPlayer.fillText("TURN",15,45);
+                ctxPlayer.fillText("CLICK",15,70);
+                return;
+            }
+            if(randomNomberGenerated == true){
+                ctxPlayer.beginPath();
+                ctxPlayer.fillStyle = "black";
+                ctxPlayer.rect(0,0,canvasPlayer.width,canvasPlayer.height);
+                ctxPlayer.fill();
+                ctxPlayer.closePath();
+                ctxPlayer.fillStyle = "white";
+                ctxPlayer.font = "30px Arial";
+                ctxPlayer.fillText(numberOnDice,30,50);
+            }
+            else{
+                ctxPlayer.fillStyle = "black";
+                ctxPlayer.font = "30px Arial";
+                ctxPlayer.fillText(numberOnDice,30,50);
+            }
+            
+            if(numberOnDice == 6 && randomNomberGenerated == false){
+                numberOnDice = generateRandomNumber1_6();
+                randomNomberGenerated = true;
+                return;
+            }
+            if(randomNomberGenerated == true){
+                randomNumberDisplayed = true;
+                return;
+            }
+            
+            numberOnDice++;
+        }
+        
+        function abilityToMove(){
+            if(randomNumberDisplayed == false){
+                return true;
+            }
+            var ability = false;
+            for(var i = 0; i < 4; i++){
+                var pawn = pawns[turn-1][i];
+                if(pawn.finished == true) continue;
+                if(numberOnDice == 6 && pawn.resting == true){
+                    pawn.able = true;
+                    ability = true;
+                }
+                else if(pawn.resting == false && (pawn.distanceTravelled+numberOnDice) <= 57){
+                    ability = true;
+                    pawn.able = true;
+                }
+            }
+            return ability;
+        }
+        
+        function makeDisable(){
+            for(var i = 0; i < 4; i++){
+                var pawn = pawns[turn-1][i];
+                pawn.able = false;
+            }
+        }
+        
+       
+        
+        setInterval(printNumberInDice,300);
+        
+        
+        
+    </script>
+    
+</html>
